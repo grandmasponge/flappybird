@@ -39,7 +39,11 @@ function scene:create( event )
   local bg = display.newImageRect("background.jpg", _W, _H)
   bg.x = _CX
   bg.y = _CY
+
   grpMain:insert(bg)
+
+  local txtGameOver = display.newText("Game Over", _CX, _CY - 50, "PressStart2P-Regular.ttf", 25)
+  grpMain:insert(txtGameOver)
 
   
 end

@@ -33,32 +33,27 @@ local canAddPipe = 0
 
 local function addPipe()
 
+    print("addPipe")
+
     local distanceBetween = math.random(120, 200)
     local yPosition = math.random(150, _H - 150)
 
-    local pTop = display.newImageRect(grpMain, "pipe.png", 50, 600)
-    pTop.x = _W + 50
-    pTop.y = yPosition - (distanceBetween / 2) - 300
+    local pTop = display.newRect(_W + 50, yPosition - (distanceBetween / 2) - 300, 50, 600)
+    pTop.fill = { 0, 1, 0 }
     pTop.type = "pipe"
-    pTop.xScale = -1
-    pTop.rotation = -180
     pipes[#pipes+1] = pTop
 
-    local pBottom = display.newImageRect(grpMain, "pipe.png", 50, 600)
-    pBottom.x = _W + 50
-    pBottom.y = yPosition + (distanceBetween / 2) + 300
+    local pBottom = display.newRect(_W + 50, yPosition + (distanceBetween / 2) + 300, 50, 600)
+    pBottom.fill = { 0, 1, 0 }
     pBottom.type = "pipe"
     pipes[#pipes+1] = pBottom
 
-    local pSensor = display.newRect(grpMain, _W + 80, _CY, 5, _H)
+    local pSensor = display.newRect(_W + 80, _CY, 5, _H)
     pSensor.fill = { 0, 1, 0 }
     pSensor.type = "sensor"
     pSensor.alpha = 0
     pipes[#pipes+1] = pSensor
 
-    grpMain:insert(pTop)
-    grpMain:insert(pBottom)
-    grpMain:insert(pSensor)
 end
 
 
