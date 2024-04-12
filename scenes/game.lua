@@ -24,7 +24,9 @@ local grpHud
 local pipes = {}
 local backgrounds = {}
 local score = 0
+local scorelbl
 local bird
+local canAddPipe = 0
 
 
 --pipes
@@ -34,7 +36,7 @@ local function addPipe()
     local distanceBetween = math.random(120, 200)
     local yPosition = math.random(150, _H - 150)
 
-    local pTop = display.newImageRect(grpWorld, "pipe.png", 50, 600)
+    local pTop = display.newImageRect(grpMain, "pipe.png", 50, 600)
     pTop.x = _W + 50
     pTop.y = yPosition - (distanceBetween / 2) - 300
     pTop.type = "pipe"
@@ -42,24 +44,65 @@ local function addPipe()
     pTop.rotation = -180
     pipes[#pipes+1] = pTop
 
-    local pBottom = display.newImageRect(grpWorld, "pipe.png", 50, 600)
+    local pBottom = display.newImageRect(grpMain, "pipe.png", 50, 600)
     pBottom.x = _W + 50
     pBottom.y = yPosition + (distanceBetween / 2) + 300
     pBottom.type = "pipe"
     pipes[#pipes+1] = pBottom
 
-    local pSensor = display.newRect(grpWorld, _W + 80, _CY, 5, _H)
+    local pSensor = display.newRect(grpMain, _W + 80, _CY, 5, _H)
     pSensor.fill = { 0, 1, 0 }
     pSensor.type = "sensor"
     pSensor.alpha = 0
     pipes[#pipes+1] = pSensor
+
+    grpMain:insert(pTop)
+    grpMain:insert(pBottom)
+    grpMain:insert(pSensor)
 end
 
 
 local function update()
-    bird.velocity = bird.velocity - bird.gravity
-    bird.y = bird.y - bird.velocity
-    
+    if bird.crashed == false  then
+        for i = #backgrounds, 1, -1 do
+            local b = backgrounds[i]
+            b:translate( -2, 0 )
+
+            if b.x < -(_W / 2) then
+                b.x = b.x + (_W * 3)
+            end
+        end
+
+        if bird.y < 0 or bird.y > _H then
+            bird.crashed = true
+        end
+
+        if canAddPipe > 100 then
+            addPipe()
+        
+            canAddPipe = 0
+        end
+        canAddPipe = canAddPipe + 1
+
+        bird.velocity = bird.velocity - bird.gravity
+        bird.y = bird.y - bird.velocity
+
+    end 
+    if bird.crashed == true then
+        composer.gotoScene("scenes.gameover")
+    end
+end
+
+--collision
+
+local function checkCollision(obj1, obj2)
+
+    local left  = (obj1.contentBounds.xMin) <= obj2.contentBounds.xMin and (obj1.contentBounds.xMax) >= obj2.contentBounds.xMin
+    local right = (obj1.contentBounds.xMin) >= obj2.contentBounds.xMin and (obj1.contentBounds.xMin) <= obj2.contentBounds.xMax
+    local up    = (obj1.contentBounds.yMin) <= obj2.contentBounds.yMin and (obj1.contentBounds.yMax) >= obj2.contentBounds.yMin
+    local down  = (obj1.contentBounds.yMin) >= obj2.contentBounds.yMin and (obj1.contentBounds.yMin) <= obj2.contentBounds.yMax
+
+    return (left or right) and (up or down)
 end
 
 
@@ -68,6 +111,7 @@ end
 --shake 
 
 local function shake( event ) 
+
     if event.isShake then
         bird.velocity = 10
     end
@@ -82,7 +126,9 @@ local composer = require( "composer" )
  
 local scene = composer.newScene()
 
-
+local function birdCollisions()
+    
+end
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -133,6 +179,11 @@ function scene:create( event )
   bird.gravity = 0.4
 
   grpMain:insert(bird)
+
+  --hud
+
+  scorelbl = display.newText("0p", _CX, 180, "PressStart2P-Regular.ttf", 40)
+  grpMain:insert(scorelbl)
 
   Runtime:addEventListener( "accelerometer", shake )
   Runtime:addEventListener( "enterFrame", update )
