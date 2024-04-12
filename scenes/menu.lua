@@ -38,7 +38,7 @@ function scene:create( event )
 
   -- Insert objects to grpMain here
 
-  local bg = display.newImageRect("background.jpg", _W, _H)
+  local bg = display.newImageRect("background.png", _W, _H)
   bg.x = _CX
   bg.y = _CY
   grpMain:insert(bg)

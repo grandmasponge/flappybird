@@ -23,10 +23,10 @@ local grpHud
 --variables
 local pipes = {}
 local backgrounds = {}
-local score = 0
-local scorelbl
-local bird
 local canAddPipe = 0
+local score = 0
+local bird
+local scorelbl
 
 
 --pipes
@@ -56,42 +56,9 @@ local function addPipe()
 
 end
 
-
-local function update()
-    if bird.crashed == false  then
-        for i = #backgrounds, 1, -1 do
-            local b = backgrounds[i]
-            b:translate( -2, 0 )
-
-            if b.x < -(_W / 2) then
-                b.x = b.x + (_W * 3)
-            end
-        end
-
-        if bird.y < 0 or bird.y > _H then
-            bird.crashed = true
-        end
-
-        if canAddPipe > 100 then
-            addPipe()
-        
-            canAddPipe = 0
-        end
-        canAddPipe = canAddPipe + 1
-
-        bird.velocity = bird.velocity - bird.gravity
-        bird.y = bird.y - bird.velocity
-
-    end 
-    if bird.crashed == true then
-        composer.gotoScene("scenes.gameover")
-    end
-end
-
 --collision
 
 local function checkCollision(obj1, obj2)
-
     local left  = (obj1.contentBounds.xMin) <= obj2.contentBounds.xMin and (obj1.contentBounds.xMax) >= obj2.contentBounds.xMin
     local right = (obj1.contentBounds.xMin) >= obj2.contentBounds.xMin and (obj1.contentBounds.xMin) <= obj2.contentBounds.xMax
     local up    = (obj1.contentBounds.yMin) <= obj2.contentBounds.yMin and (obj1.contentBounds.yMax) >= obj2.contentBounds.yMin
@@ -101,6 +68,85 @@ local function checkCollision(obj1, obj2)
 end
 
 
+local function update()
+
+  print(pipes)
+
+  if bird.crashed == false then
+      for i = #backgrounds, 1, -1 do
+          local b = backgrounds[i]
+          b:translate( -2, 0 )
+
+          if b.x < -(_W / 2) then
+              b.x = b.x + (_W * 3)
+          end
+      end
+
+      for i = #pipes, 1, -1 do
+          local object = pipes[i]
+          print(object.type)
+          object:translate( -2, 0 )
+
+          if object.x < -100 then
+              local child = table.remove(pipes, i)
+
+              if child ~= nil then
+                  child:removeSelf()
+                  child = nil
+              end
+          end
+
+            if object.type == "sensor" then
+                if checkCollision(bird, object) then
+                    print("score")
+                    score = score + 1
+                    scorelbl.text = score .. "p"
+                end
+            end
+
+            if object.type == "pipe" then
+                if checkCollision(bird, object) then
+                    print("dead")
+
+                    bird.crashed = true
+
+                    composer.gotoScene("scenes.gameover")
+                end
+            end
+
+         
+      end
+
+      --
+
+      bird.velocity = bird.velocity - bird.gravity
+      bird.y = bird.y - bird.velocity
+
+      if bird.y > _H or bird.y < 0 then
+          print("dead")
+
+          bird.crashed = true
+
+          
+
+          audio.play(sndCrash)
+
+          
+          composer.gotoScene("scenes.gameover")
+         
+      end
+
+      --
+
+      if canAddPipe > 100 then
+          addPipe()
+      
+          canAddPipe = 0
+      end
+
+      canAddPipe = canAddPipe + 1
+  end
+end
 
 
 --shake 
@@ -117,21 +163,13 @@ end
 
 
 
-local composer = require( "composer" )
- 
-local scene = composer.newScene()
-
-local function birdCollisions()
-    
-end
-
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
 
 -- create()
 function scene:create( event )
-  print("scene:create - menu")
+  print("scene:create - game")
 
   -- Create main group and insert to scene
   grpMain = display.newGroup()
@@ -144,36 +182,38 @@ function scene:create( event )
   grpHud = display.newGroup()
   grpMain:insert(grpHud)
 
-  -- Background objects
+  -- Insert objects to grpMain here
 
-  local b1 = display.newImageRect(grpWorld, "background.jpg", _W, _H)
-    b1.x = _CX
-    b1.y = _CY
-    backgrounds[#backgrounds+1] = b1
+  --
+  -- Backgrounds
 
-    local b2 = display.newImageRect(grpWorld, "background.jpg", _W, _H)
-    b2.x = _CX + _W
-    b2.y = _CY
-    backgrounds[#backgrounds+1] = b2
+  local b1 = display.newImageRect(grpWorld, "background.png", _W, _H)
+  b1.x = _CX
+  b1.y = _CY
+  backgrounds[#backgrounds+1] = b1
 
-    local b3 = display.newImageRect(grpWorld, "background.jpg", _W, _H)
-    b3.x = _CX + (_W * 2)
-    b3.y = _CY
-    backgrounds[#backgrounds+1] = b3
-  grpMain:insert(b1)
-  grpMain:insert(b2)
-  grpMain:insert(b3)
+  local b2 = display.newImageRect(grpWorld, "background.png", _W, _H)
+  b2.x = _CX + _W
+  b2.y = _CY
+  backgrounds[#backgrounds+1] = b2
 
-  -- bird
+  local b3 = display.newImageRect(grpWorld, "background.png", _W, _H)
+  b3.x = _CX + (_W * 2)
+  b3.y = _CY
+  backgrounds[#backgrounds+1] = b3
 
-  bird = display.newImageRect(grpWorld, "bird.png", 35, 30)
+  --
+  -- Bird
+
+  bird = display.newImageRect( grpWorld, "bird.png", 25, 20 )
   bird.x = 100
   bird.y = _CY
   bird.velocity = 0
   bird.crashed = false
-  bird.gravity = 0.4
+  bird.gravity = 0.6
 
-  grpMain:insert(bird)
+  --
+  -- Score label
 
   --hud
 
