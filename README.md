@@ -4,7 +4,7 @@ i absolutley hate lua, its been known amongst my freinds that i dispise lua.
 and that got me thinking why? maybe because of the speed, the syntax or maybe juss the name lua.
 It seems ill never know why.
 
-#![image]("https://upload.wikimedia.org/wikipedia/commons/c/cf/Lua-Logo.svg")
+![Lua-not-your-average-scripting-language-blog-hero](https://github.com/grandmasponge/flappybird/assets/73469941/f73c0096-5bb4-429e-a399-d8f3eb503892)
 
 anyway tangent aside heres a small game i made in corona sdk as apart of a project "heavily inspired by https://www.youtube.com/watch?v=zjxJDW6LSEU "
 because i didnt know how flappy bird works and i didnt want to put in the effort to learn lua but i had to learn some stuff about it anyway
