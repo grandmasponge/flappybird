@@ -17,6 +17,11 @@ local grpMain
 local grpWorld
 local grpHud
 
+-- Sounds
+local sndCrash = audio.loadSound("sfx_die.mp3")
+local sndflap = audio.loadSound("sfx_wing.mp3")
+local sndpoint = audio.loadSound("sfx_point.mp3")
+
 
 -- Initialize the game
 
@@ -99,6 +104,7 @@ local function update()
             if object.type == "sensor" then
                 if checkCollision(bird, object) then
                     print("score")
+                    audio.play(sndpoint)
                     score = score + 1
                     scorelbl.text = score .. "p"
                 end
@@ -107,7 +113,7 @@ local function update()
             if object.type == "pipe" then
                 if checkCollision(bird, object) then
                     print("dead")
-
+                    audio.play(sndCrash)
                     bird.crashed = true
 
                     composer.gotoScene("scenes.gameover")
@@ -126,9 +132,6 @@ local function update()
           print("dead")
 
           bird.crashed = true
-
-          
-
           audio.play(sndCrash)
 
           
@@ -154,6 +157,8 @@ end
 local function shake( event ) 
 
     if event.isShake then
+        print("shake")
+        audio.play(sndflap)
         bird.velocity = 10
     end
 
@@ -250,6 +255,7 @@ end
 -- destroy()
 function scene:destroy(event)
   if event.phase == "will" then
+    composer.removeScene("scenes.game")
     Runtime:removeEventListener("enterFrame", update)
     Runtime:removeEventListener("accelerometer", shake)
   end

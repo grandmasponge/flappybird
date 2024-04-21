@@ -71,6 +71,7 @@ end
 -- destroy()
 function scene:destroy(event)
   if event.phase == "will" then
+    composer.removeScene("scenes.gameover")
   end
 end
 

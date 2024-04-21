@@ -1,0 +1,4 @@
+1. added sounds client wanted them
+2. bug fixes with collision
+3. destroying scenes when completed with them for performance gain
+4. removed event listeners at the end for performance gain
