@@ -29,6 +29,8 @@ local grpMain
 function scene:create( event )
   print("scene:create - gameover")
 
+  pipes = nil
+
   -- Create main group and insert to scene
   grpMain = display.newGroup()
 
@@ -44,6 +46,9 @@ function scene:create( event )
 
   local txtGameOver = display.newText("Game Over", _CX, _CY - 50, "PressStart2P-Regular.ttf", 25)
   grpMain:insert(txtGameOver)
+
+  local highScore = display.newText("High Score: " .. high_score, _CX, _CY-80, "PressStart2P-Regular.ttf", 25)
+  grpMain:insert(highScore)
 
   
 end

@@ -5,6 +5,22 @@
 local composer = require("composer")
 local relayout = require("relayout")
 
+-- -----------------------------------------------------------------------------------
+-- open Score file
+-- -----------------------------------------------------------------------------------
+
+
+
+
+-- Path for the file to write
+local path = system.pathForFile( "savefile.txt", system.DocumentsDirectory )
+ 
+-- Open the file handle
+local file, errorString = io.open( path, "r" )
+ 
+
+high_score = file:read()
+io.close(file)
 
 
 
@@ -36,6 +52,7 @@ function scene:create( event )
 
   self.view:insert(grpMain)
 
+
   -- Insert objects to grpMain here
 
   local bg = display.newImageRect("background.png", _W, _H)
@@ -44,6 +61,11 @@ function scene:create( event )
   grpMain:insert(bg)
 
   --
+
+  -- high score text
+
+  local highScore = display.newText("High Score: " .. high_score, _CX, _CY-80, "PressStart2P-Regular.ttf", 25)
+  grpMain:insert(highScore)
 
   local btnPlay = display.newText("Tap to start", _CX, _CY, "PressStart2P-Regular.ttf", 25)
   grpMain:insert(btnPlay)

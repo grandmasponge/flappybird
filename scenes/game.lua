@@ -92,7 +92,7 @@ local function update()
           print(object.type)
           object:translate( -2, 0 )
 
-          if object.x < -100 then
+          if object.x < -50 then
               local child = table.remove(pipes, i)
 
               if child ~= nil then
@@ -113,6 +113,26 @@ local function update()
             if object.type == "pipe" then
                 if checkCollision(bird, object) then
                     print("dead")
+                    if score > tonumber(high_score) then
+                        local path = system.pathForFile( "savefile.txt", system.DocumentsDirectory )
+                        print(score)
+                        -- Open the file handle
+                        local file, errorString = io.open( path, "w+" )
+                        
+                        if file == false then
+                            -- Error occurred; output the cause
+                            print( "File error: " .. errorString )
+                        else
+                            -- Write data to file
+                            file:write( score )
+                            -- Close the file handle
+                            file:close()
+                        end
+                        
+                        high_score = score
+                    end
+                   
+
                     audio.play(sndCrash)
                     bird.crashed = true
 
