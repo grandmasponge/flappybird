@@ -17,10 +17,15 @@ local path = system.pathForFile( "savefile.txt", system.DocumentsDirectory )
  
 -- Open the file handle
 local file, errorString = io.open( path, "r" )
- 
 
-high_score = file:read()
-io.close(file)
+if not file then
+    -- Error occurred; output the cause
+    print( "File error: " .. errorString )
+    else
+        high_score = file:read()
+        io.close( file )
+end
+
 
 
 
