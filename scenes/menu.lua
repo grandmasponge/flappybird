@@ -21,6 +21,7 @@ local file, errorString = io.open( path, "r" )
 if not file then
     -- Error occurred; output the cause
     print( "File error: " .. errorString )
+    high_score = 0
     else
         high_score = file:read()
         io.close( file )
